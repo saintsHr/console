@@ -6,6 +6,10 @@
 namespace console::drivers {
 
 using PinNumber = uint8_t;
+using DeviceID = uint8_t;
+using DeviceCount = uint8_t;
+
+constexpr uint8_t SPI_MAX_DEVICES = 8;
 
 enum class SpiHost {
     SPI2,
@@ -29,16 +33,20 @@ public:
     );
 
     bool begin();
+    
+    bool addDevice(PinNumber cs, uint32_t hz, SpiMode mode, DeviceID &outId);
 
     bool write(
-        const uint8_t* data,
-        size_t length
+        const uint8_t *data,
+        size_t length,
+        DeviceID device
     );
 
     bool transfer(
-        const uint8_t* tx,
-        uint8_t* rx,
-        size_t length
+        const uint8_t *tx,
+        uint8_t *rx,
+        size_t length,
+        DeviceID device
     );
 
 private:
@@ -48,7 +56,8 @@ private:
     PinNumber mosi_;
     PinNumber miso_;
 
-    spi_device_handle_t device_ = nullptr;
+    spi_device_handle_t devices_[SPI_MAX_DEVICES];
+    DeviceCount device_count_ = 0;
 };
 
 }

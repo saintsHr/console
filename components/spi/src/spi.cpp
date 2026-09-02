@@ -1,4 +1,7 @@
 #include "spi.hpp"
+#include "driver/spi_master.h"
+#include "esp_err.h"
+#include <cstdint>
 
 namespace console::drivers {
 
@@ -40,12 +43,37 @@ bool Spi::begin() {
     ) == ESP_OK;
 }
 
+bool Spi::addDevice(PinNumber cs, uint32_t hz, SpiMode mode, DeviceID &outId) {
+    if (device_count_ >= SPI_MAX_DEVICES) return false;
+
+    spi_device_interface_config_t device = {};
+    DeviceID id = device_count_;
+
+    device.clock_speed_hz = hz;
+    device.mode = static_cast<uint8_t>(mode);
+    device.spics_io_num = cs;
+    device.queue_size = 7;
+
+    if (spi_bus_add_device(
+        host_,
+        &device,
+        &devices_[id]
+    ) != ESP_OK) return false;
+
+    outId = id;
+    device_count_++;
+
+    return true;
+}
+
 
 bool Spi::write(
-    const uint8_t* data,
-    size_t length
+    const uint8_t *data,
+    size_t length,
+    DeviceID device
 ) {
-    if (!device_) return false;
+    if (device >= SPI_MAX_DEVICES) return false;
+    if (device >= device_count_) return false;
 
     spi_transaction_t transaction = {};
 
@@ -53,18 +81,20 @@ bool Spi::write(
     transaction.tx_buffer = data;
 
     return spi_device_transmit(
-        device_,
+        devices_[device],
         &transaction
     ) == ESP_OK;
 }
 
 
 bool Spi::transfer(
-    const uint8_t* tx,
-    uint8_t* rx,
-    size_t length
+    const uint8_t *tx,
+    uint8_t *rx,
+    size_t length,
+    DeviceID device
 ) {
-    if (!device_) return false;
+    if (device >= SPI_MAX_DEVICES) return false;
+    if (device >= device_count_) return false;
 
     spi_transaction_t transaction = {};
 
@@ -73,7 +103,7 @@ bool Spi::transfer(
     transaction.rx_buffer = rx;
 
     return spi_device_transmit(
-        device_,
+        devices_[device],
         &transaction
     ) == ESP_OK;
 }
