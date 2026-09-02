@@ -32,7 +32,7 @@ bool Spi::begin() {
     bus.sclk_io_num = sclk_;
     bus.mosi_io_num = mosi_;
     bus.miso_io_num = miso_;
-    bus.max_transfer_sz = 4096;
+    bus.max_transfer_sz = SPI_DMA_SIZE;
 
     return (spi_bus_initialize(host_, &bus, SPI_DMA_CH_AUTO) == ESP_OK);
 }

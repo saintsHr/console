@@ -65,6 +65,26 @@ void St7735::turn_on_() {
 	vTaskDelay(200 / portTICK_PERIOD_MS);
 }
 
+void St7735::set_window_(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
+	uint8_t data_x[4] = {
+		0, static_cast<uint8_t>(x0 + ST7735_OFFSET_X),
+		0, static_cast<uint8_t>(x1 + ST7735_OFFSET_X)
+	};
+
+	uint8_t data_y[4] = {
+		0, static_cast<uint8_t>(y0 + ST7735_OFFSET_Y),
+		0, static_cast<uint8_t>(y1 + ST7735_OFFSET_Y)
+	};
+
+	write_command_(ST7735_CMD_CASET);
+	write_data_(data_x, 4);
+
+	write_command_(ST7735_CMD_RASET);
+	write_data_(data_y, 4);
+
+	write_command_(ST7735_CMD_RAMWR);
+}
+
 bool St7735::init() {
 	dc_.setMode(PinMode::Output);
 	rst_.setMode(PinMode::Output);
@@ -84,6 +104,15 @@ bool St7735::init() {
 	turn_on_();
 
 	return true;
+}
+
+void St7735::draw(const uint16_t* framebuffer) {
+	set_window_(0, 0, ST7735_WIDTH - 1, ST7735_HEIGHT - 1);
+	
+	write_data_(
+		reinterpret_cast<const uint8_t*>(framebuffer),
+		ST7735_WIDTH * ST7735_HEIGHT * sizeof(uint16_t)
+	);
 }
 
 }

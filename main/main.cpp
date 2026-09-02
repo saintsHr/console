@@ -1,5 +1,5 @@
-#include "gpio.hpp"
 #include "st7735.hpp"
+#include <freertos/FreeRTOS.h>
 
 extern "C" void app_main() {
     console::drivers::Spi spi(
@@ -10,4 +10,8 @@ extern "C" void app_main() {
 
     console::drivers::St7735 display(spi);
     if (!display.init()) return;
+
+    while (true) {
+        vTaskDelay(33 / portTICK_PERIOD_MS);
+    }
 }
