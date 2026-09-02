@@ -5,4 +5,7 @@ idf_component_register(
         "src/st7735.cpp"
     INCLUDE_DIRS
         "include"
+    REQUIRES
+        spi
+        gpio
 )

@@ -1,7 +1,6 @@
 #include "spi.hpp"
-#include "driver/spi_master.h"
-#include "esp_err.h"
-#include <cstdint>
+#include <driver/spi_master.h>
+#include <esp_err.h>
 
 namespace console::drivers {
 
@@ -33,14 +32,9 @@ bool Spi::begin() {
     bus.sclk_io_num = sclk_;
     bus.mosi_io_num = mosi_;
     bus.miso_io_num = miso_;
-
     bus.max_transfer_sz = 4096;
 
-    return spi_bus_initialize(
-        host_,
-        &bus,
-        SPI_DMA_CH_AUTO
-    ) == ESP_OK;
+    return (spi_bus_initialize(host_, &bus, SPI_DMA_CH_AUTO) == ESP_OK);
 }
 
 bool Spi::addDevice(PinNumber cs, uint32_t hz, SpiMode mode, DeviceID &outId) {
@@ -74,6 +68,7 @@ bool Spi::write(
 ) {
     if (device >= SPI_MAX_DEVICES) return false;
     if (device >= device_count_) return false;
+    if (device == SPI_INVALID_DEVICE) return false;
 
     spi_transaction_t transaction = {};
 
@@ -95,6 +90,7 @@ bool Spi::transfer(
 ) {
     if (device >= SPI_MAX_DEVICES) return false;
     if (device >= device_count_) return false;
+    if (device == SPI_INVALID_DEVICE) return false;
 
     spi_transaction_t transaction = {};
 

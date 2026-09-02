@@ -3,7 +3,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 idf_component_register(
     SRCS
         "main.cpp"
-    INCLUDE_DIRS
-        "../components/gpio/include"
-        "../components/pwm/include"
+    REQUIRES
+        gpio
+        pwm
+        spi
+        st7735
 )

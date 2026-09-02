@@ -5,6 +5,6 @@ idf_component_register(
         "src/pwm.cpp"
     INCLUDE_DIRS
         "include"
-    PRIV_REQUIRES
+    REQUIRES
         esp_driver_ledc
 )

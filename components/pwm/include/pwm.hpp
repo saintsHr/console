@@ -5,7 +5,7 @@
 
 namespace console::drivers {
 
-using PinNumber = uint8_t;
+using PinNumber = int8_t;
 
 enum class PwmResolution : uint8_t {
     Bits8  = LEDC_TIMER_8_BIT,

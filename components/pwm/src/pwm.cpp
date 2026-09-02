@@ -1,5 +1,5 @@
 #include "pwm.hpp"
-#include "soc/gpio_num.h"
+#include <soc/gpio_num.h>
 
 namespace console::drivers {
 

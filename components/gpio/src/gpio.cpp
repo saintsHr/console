@@ -1,7 +1,5 @@
 #include "gpio.hpp"
-#include "soc/gpio_num.h"
-
-#include <cstdint>
+#include <soc/gpio_num.h>
 #include <driver/gpio.h>
 
 namespace console::drivers {

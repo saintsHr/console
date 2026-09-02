@@ -4,7 +4,9 @@
 
 namespace console::drivers {
 
-using PinNumber = uint8_t;
+using PinNumber = int8_t;
+
+constexpr PinNumber GPIO_NOT_CONNECTED = -1;
 
 enum class PinMode {
 	Input,

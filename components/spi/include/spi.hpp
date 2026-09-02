@@ -1,15 +1,16 @@
 #pragma once
 
 #include <cstdint>
-#include "driver/spi_master.h"
+#include <driver/spi_master.h>
 
 namespace console::drivers {
 
-using PinNumber = uint8_t;
+using PinNumber = int8_t;
 using DeviceID = uint8_t;
 using DeviceCount = uint8_t;
 
 constexpr uint8_t SPI_MAX_DEVICES = 8;
+constexpr uint8_t SPI_INVALID_DEVICE = 255;
 
 enum class SpiHost {
     SPI2,
