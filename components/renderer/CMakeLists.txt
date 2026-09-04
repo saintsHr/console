@@ -2,11 +2,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
 idf_component_register(
     SRCS
-        "main.cpp"
+        "src/renderer.cpp"
+    INCLUDE_DIRS
+        "include"
     REQUIRES
-        gpio
-        pwm
-        spi
         st7735
-        renderer
 )

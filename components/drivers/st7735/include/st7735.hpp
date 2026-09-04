@@ -12,11 +12,11 @@ constexpr uint8_t ST7735_WIDTH = 128; // default: 128
 constexpr uint8_t ST7735_HEIGHT = 128; // default: 128
 
 constexpr uint8_t ST7735_OFFSET_X = 2; // default: 2
-constexpr uint8_t ST7735_OFFSET_Y = 1; // default: 1
+constexpr uint8_t ST7735_OFFSET_Y = 3; // default: 3
 
 constexpr uint32_t ST7735_SPI_HZ = 26000000; // default: 26000000
 
-constexpr uint8_t ST7735_ORIENTATION = 0x00; // default: 0x00
+constexpr uint8_t ST7735_ORIENTATION = 0xC8; // default: 0xC8
 constexpr uint8_t ST7735_COLOR_MODE = 0x05; // default: 0x05
 
 constexpr uint8_t ST7735_CMD_RESET_SOFT = 0x01; // default: 0x01
@@ -32,32 +32,31 @@ namespace console::drivers {
 
 class St7735 {
 public:
-	St7735(
-		Spi &spi
-	);
+    St7735(Spi& spi);
 
-	bool init();
-	void draw(const uint16_t* framebuffer);
-
+    bool init();
+    void draw(const uint16_t* framebuffer);
 private:
-	console::drivers::Spi &spi_;
-	DeviceID id_;
+    console::drivers::Spi& spi_;
+    DeviceID id_;
 
-	Pin dc_;
-	Pin rst_;
+    Pin dc_;
+    Pin rst_;
 
-	bool write_command_(uint8_t cmd);
-	bool write_data_(const uint8_t *dat, size_t length);
+    uint8_t* tx_buffer_;
 
-	void reset_hard_();
-	void reset_soft_();
+    bool write_command_(uint8_t cmd);
+    bool write_data_(const uint8_t* dat, size_t length);
 
-	void sleep_out_();
-	void color_mode_();
-	void orientation_();
-	void turn_on_();
+    void reset_hard_();
+    void reset_soft_();
 
-	void set_window_(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
+    void sleep_out_();
+    void color_mode_();
+    void orientation_();
+    void turn_on_();
+
+    void set_window_(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
 };
 
 }

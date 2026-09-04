@@ -11,8 +11,7 @@ using DeviceCount = uint8_t;
 
 constexpr uint8_t SPI_MAX_DEVICES = 8;
 constexpr uint8_t SPI_INVALID_DEVICE = 255;
-constexpr uint16_t SPI_DMA_SIZE = 32768;
-
+constexpr uint32_t SPI_DMA_SIZE = 40 * 1024;
 
 enum class SpiHost {
     SPI2,

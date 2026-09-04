@@ -46,7 +46,7 @@ bool Spi::addDevice(PinNumber cs, uint32_t hz, SpiMode mode, DeviceID &outId) {
     device.clock_speed_hz = hz;
     device.mode = static_cast<uint8_t>(mode);
     device.spics_io_num = cs;
-    device.queue_size = 7;
+    device.queue_size = 1;
 
     if (spi_bus_add_device(
         host_,

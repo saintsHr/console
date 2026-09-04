@@ -10,7 +10,12 @@ namespace console::drivers {
 St7735::St7735(
 	Spi& spi
 ) : spi_(spi), id_(SPI_INVALID_DEVICE), dc_(ST7735_PIN_DC), rst_(ST7735_PIN_RST) {
-	
+	tx_buffer_ = static_cast<uint8_t*>(
+        heap_caps_malloc(
+            ST7735_WIDTH * ST7735_HEIGHT * 2,
+            MALLOC_CAP_DMA
+        )
+    );
 }
 
 bool St7735::write_command_(uint8_t cmd) {
@@ -52,12 +57,12 @@ void St7735::color_mode_() {
 }
 
 void St7735::orientation_() {
-	write_command_(ST7735_CMD_ORIENTATION);
+    write_command_(ST7735_CMD_ORIENTATION);
 
-	uint8_t param = ST7735_ORIENTATION;
-	write_data_(&param, 1);
+    uint8_t param = ST7735_ORIENTATION;
+    write_data_(&param, sizeof(param));
 
-	vTaskDelay(10 / portTICK_PERIOD_MS);
+    vTaskDelay(pdMS_TO_TICKS(10));
 }
 
 void St7735::turn_on_() {
@@ -107,12 +112,26 @@ bool St7735::init() {
 }
 
 void St7735::draw(const uint16_t* framebuffer) {
-	set_window_(0, 0, ST7735_WIDTH - 1, ST7735_HEIGHT - 1);
-	
-	write_data_(
-		reinterpret_cast<const uint8_t*>(framebuffer),
-		ST7735_WIDTH * ST7735_HEIGHT * sizeof(uint16_t)
-	);
+    if (!tx_buffer_) return;
+
+    set_window_(
+        0,
+        0,
+        ST7735_WIDTH - 1,
+        ST7735_HEIGHT - 1
+    );
+
+    for (uint32_t i = 0; i < ST7735_WIDTH * ST7735_HEIGHT; i++) {
+        uint16_t pixel = framebuffer[i];
+
+        tx_buffer_[i * 2]     = pixel >> 8;
+        tx_buffer_[i * 2 + 1] = pixel & 0xFF;
+    }
+
+    write_data_(
+        tx_buffer_,
+        ST7735_WIDTH * ST7735_HEIGHT * 2
+    );
 }
 
 }
