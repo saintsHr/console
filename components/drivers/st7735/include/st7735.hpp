@@ -4,8 +4,8 @@
 #include "gpio.hpp"
 #include <cstdint>
 
-constexpr uint8_t ST7735_PIN_DC = 2; // default: 2
-constexpr uint8_t ST7735_PIN_RST = 4; // default: 4
+constexpr uint8_t ST7735_PIN_DC = 27; // default: 27
+constexpr uint8_t ST7735_PIN_RST = 32; // default: 32
 constexpr uint8_t ST7735_PIN_CS = 5; // default: 5
 
 constexpr uint8_t ST7735_WIDTH = 128; // default: 128
