@@ -18,23 +18,7 @@ extern "C" void app_main() {
     while (true) {
         renderer.beginFrame(0x0000);
 
-        renderer.drawFillQuad(
-            0xF800,
-            40, 60,
-            10, 10
-        );
-
-        renderer.drawFillQuad(
-            0x07E0,
-            60, 60,
-            10, 10
-        );
-
-        renderer.drawFillQuad(
-            0x001F,
-            80, 60,
-            10, 10
-        );
+        
 
         renderer.endFrame(30);
     }
