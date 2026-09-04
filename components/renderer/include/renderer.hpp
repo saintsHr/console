@@ -25,22 +25,22 @@ public:
 
 	void drawLine(
 		uint16_t color,
-		uint16_t x0, uint16_t y0,
-		uint16_t x1, uint16_t y1
+		int16_t x0, int16_t y0,
+		int16_t x1, int16_t y1
 	);
 
 	void drawFillQuad(
     	uint16_t color,
-    	uint16_t x,
-    	uint16_t y,
+    	int16_t x,
+    	int16_t y,
     	uint16_t width,
     	uint16_t height
 	);
 
 	void drawHollowQuad(
     	uint16_t color,
-    	uint16_t x,
-    	uint16_t y,
+    	int16_t x,
+    	int16_t y,
     	uint16_t width,
     	uint16_t height
 	);
@@ -48,13 +48,13 @@ public:
 	void drawHollowCircle(
 		uint16_t color,
 		int16_t cx, int16_t cy,
-		int16_t r
+		uint16_t r
 	);
 	
 	void drawFillCircle(
 		uint16_t color,
 		int16_t cx, int16_t cy,
-		int16_t r
+		uint16_t r
 	);
 
 	void drawHollowTriangle(
@@ -63,12 +63,24 @@ public:
 	    int16_t x1, int16_t y1,
 	    int16_t x2, int16_t y2
 	);
-	
+
 	void drawFillTriangle(
 	    uint16_t color,
 	    int16_t x0, int16_t y0,
 	    int16_t x1, int16_t y1,
 	    int16_t x2, int16_t y2
+	);
+
+	void drawChar(
+		uint16_t color,
+		int16_t x, int16_t y,
+		char c, uint8_t scale = 1
+	);
+
+	void drawText(
+		uint16_t color,
+		int16_t x, int16_t y,
+		const char* text, uint8_t scale = 1
 	);
 private:
 	Pixel framebuffer_[RENDERER_WIDTH * RENDERER_HEIGHT] = {0};

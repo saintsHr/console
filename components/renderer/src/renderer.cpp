@@ -1,6 +1,8 @@
 #include "renderer.hpp"
-#include "freertos/idf_additions.h"
-#include "portmacro.h"
+#include "font.hpp"
+
+#include <freertos/idf_additions.h>
+#include <portmacro.h>
 #include <cstdint>
 #include <algorithm>
 
@@ -34,8 +36,8 @@ void Renderer::drawPixel(
 
 void Renderer::drawLine(
 	uint16_t color,
-	uint16_t x0, uint16_t y0,
-	uint16_t x1, uint16_t y1
+	int16_t x0, int16_t y0,
+	int16_t x1, int16_t y1
 ) {
 	int dx = abs(x1 - x0);
     int sx = x0 < x1 ? 1 : -1;
@@ -66,8 +68,8 @@ void Renderer::drawLine(
 
 void Renderer::drawFillQuad(
     uint16_t color,
-    uint16_t x,
-    uint16_t y,
+    int16_t x,
+    int16_t y,
     uint16_t width,
     uint16_t height
 ) {
@@ -80,8 +82,8 @@ void Renderer::drawFillQuad(
 
 void Renderer::drawHollowQuad(
     uint16_t color,
-    uint16_t x,
-    uint16_t y,
+    int16_t x,
+    int16_t y,
     uint16_t width,
     uint16_t height
 ) {
@@ -94,7 +96,7 @@ void Renderer::drawHollowQuad(
 void Renderer::drawHollowCircle(
     uint16_t color,
     int16_t cx, int16_t cy,
-    int16_t r
+    uint16_t r
 ) {
     int16_t x = r;
     int16_t y = 0;
@@ -124,7 +126,7 @@ void Renderer::drawHollowCircle(
 void Renderer::drawFillCircle(
     uint16_t color,
     int16_t cx, int16_t cy,
-    int16_t r
+    uint16_t r
 ) {
     int16_t x = r;
     int16_t y = 0;
@@ -195,6 +197,55 @@ void Renderer::drawFillTriangle(
 
         if (xShort > xLong) swapInt16(xShort, xLong);
         drawLine(color, xShort, y, xLong, y);
+    }
+}
+
+void Renderer::drawChar(
+    uint16_t color,
+    int16_t x, int16_t y,
+    char c,
+    uint8_t scale
+) {
+    if (c < 0x20 || c > 0x7E) c = '?';
+    const uint8_t* glyph = FONT_5X7[c - 0x20];
+
+    for (uint8_t col = 0; col < 5; col++) {
+        uint8_t bits = glyph[col];
+        for (uint8_t row = 0; row < 7; row++) {
+            if (bits & (1 << row)) {
+                if (scale == 1) {
+                    drawPixel(color, x + col, y + row);
+                } else {
+                    drawFillQuad(
+                        color,
+                        x + col * scale, y + row * scale,
+                        scale, scale
+                    );
+                }
+            }
+        }
+    }
+}
+
+void Renderer::drawText(
+    uint16_t color,
+    int16_t x, int16_t y,
+    const char* text,
+    uint8_t scale
+) {
+    int16_t cursorX = x;
+    int16_t cursorY = y;
+    const uint8_t charWidth = 6 * scale;
+
+    while (*text) {
+        if (*text == '\n') {
+            cursorX = x;
+            cursorY += 8 * scale;
+        } else {
+            drawChar(color, cursorX, cursorY, *text, scale);
+            cursorX += charWidth;
+        }
+        text++;
     }
 }
 
